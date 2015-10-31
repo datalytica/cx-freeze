@@ -79,6 +79,8 @@ class build_ext(distutils.command.build_ext.build_ext):
                 extraArgs.append("/MANIFEST")
             elif compiler_type == "mingw32" and ext.name.find("Win32GUI") > 0:
                 extraArgs.append("-mwindows")
+        elif sys.platform == "darwin":
+            extraArgs.append("-Wl,-rpath,@loader_path/./")
         else:
             vars = distutils.sysconfig.get_config_vars()
             if True:  # fixed per https://bitbucket.org/anthony_tuininga/cx_freeze/ issue 32
@@ -155,10 +157,13 @@ depends = ["source/bases/Common.c"]
 fullDepends = depends + [baseModulesFileName]
 includeDirs = [baseModulesDir]
 console = Extension("cx_Freeze.bases.Console", ["source/bases/Console.c"],
-        depends = fullDepends, include_dirs = includeDirs)
+        depends = fullDepends, include_dirs = includeDirs,
+        libraries=["python2.7"])
 consoleKeepPath = Extension("cx_Freeze.bases.ConsoleKeepPath",
-        ["source/bases/ConsoleKeepPath.c"], depends = depends)
+        ["source/bases/ConsoleKeepPath.c"], depends = depends,
+        libraries=["python2.7"])
 extensions = [utilModule, console, consoleKeepPath]
+
 if sys.platform == "win32":
     scripts.append("cxfreeze-postinstall")
     options["bdist_msi"] = dict(install_script = "cxfreeze-postinstall")

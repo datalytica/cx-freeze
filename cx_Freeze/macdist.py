@@ -158,9 +158,9 @@ class bdist_mac(Command):
                 # find the actual referenced file name
                 referencedFile = reference.decode().strip().split()[0]
 
-                if referencedFile.startswith('@'):
-                    # the referencedFile is already a relative path
-                    continue
+                #if referencedFile.startswith('@'):
+                #    # the referencedFile is already a relative path
+                #    continue
 
                 path, name = os.path.split(referencedFile)
 
